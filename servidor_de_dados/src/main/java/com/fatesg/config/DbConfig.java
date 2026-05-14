@@ -3,7 +3,7 @@ package com.fatesg.config;
 public record DbConfig() {
         // TODO: Mover para um arquivo de configuração
         public static final String URL = System.getenv("FATESG_DB_URL") != null ? System.getenv("FATESG_DB_URL")
-                        : "jdbc:mysql://localhost:3306/employees";
+                        : "jdbc:mysql://localhost:3307/employees";
         public static final String USERNAME = System.getenv("FATESG_DB_USERNAME") != null
                         ? System.getenv("FATESG_DB_USERNAME")
                         : "root";
@@ -13,3 +13,4 @@ public record DbConfig() {
         public static final String DRIVER = "com.mysql.cj.jdbc.Driver";
         public static final int DEFAULT_LIMIT = 15;
 }
+
