@@ -24,14 +24,27 @@ public class CalculoDeFolhaService implements ServidorDeCalculoFolhaInterface {
             int offset = 0;
             int limit = 50;
             List<SalarioDto> salarios;
-            // do {
-                salarios = stub.listarSalarios(limit, offset);
-                for (SalarioDto salarioDto : salarios) {
-                    ReciboDto recibo = calcularReciboDePagamento(salarioDto.getIdFuncionario(), mes, ano, descontos);
-                    folha.addRecibo(recibo);
-                }
-                offset++;
-            // } while (salarios.size() > 0);
+
+            salarios = stub.listarSalarios(limit, offset);
+            for (SalarioDto salarioDto : salarios) {
+
+                // Atividade 4: calcula direto sem buscar o salário novamente
+                double salarioBruto = salarioDto.getValor() / 12;
+
+                var recibo = new ReciboDto(
+                        mes,
+                        ano,
+                        salarioDto.getIdFuncionario(),
+                        new SalarioDto(salarioDto.getIdFuncionario(), salarioBruto));
+
+                descontos.forEach((k, v) -> recibo.addDesconto(k, v));
+
+                double salarioLiquido = calcularSalarioLiquido(salarioBruto, descontos);
+                recibo.setSalarioLiquido(salarioLiquido);
+
+                folha.addRecibo(recibo);
+            }
+
             return folha;
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -55,9 +68,7 @@ public class CalculoDeFolhaService implements ServidorDeCalculoFolhaInterface {
                     idFuncionario,
                     new SalarioDto(idFuncionario, salarioBruto));
 
-            descontos.forEach((k, v) -> {
-                recibo.addDesconto(k, v);
-            });
+            descontos.forEach((k, v) -> recibo.addDesconto(k, v));
 
             double salarioLiquido = calcularSalarioLiquido(salarioBruto, descontos);
             recibo.setSalarioLiquido(salarioLiquido);
@@ -83,8 +94,6 @@ public class CalculoDeFolhaService implements ServidorDeCalculoFolhaInterface {
     @Override
     public FolhaDto calcularFolhaDePagamentoDoDepartamento(String arg0, byte arg1, short arg2,
             HashMap<String, Double> arg3) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'calcularFolhaDePagamentoDoDepartamento'");
     }
-
 }
