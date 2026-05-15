@@ -19,15 +19,31 @@ public class ServidorDeCalculoApi implements ClienteDeCalculoFolhaInterface {
     private PrintWriter saida;
     private BufferedReader entrada;
 //comentario apenas pra dizer que rodei mvn passou
+
+private static int contadorRequisicoes = 0;
+
     public ServidorDeCalculoApi() {
         super();
     }
 
     private void conectar() throws IOException {
-        this.cliente = new Socket(JsonRPCConfig.JSON_RPC_SERVER_HOST, (int) JsonRPCConfig.JSON_RPC_SERVER_PORT);
-        this.saida = new PrintWriter(cliente.getOutputStream(), true);
-        this.entrada = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
+    String host;
+    int porta;
+
+    if (contadorRequisicoes % 2 == 0) {
+        host = JsonRPCConfig.JSON_RPC_SERVER_HOST;
+        porta = JsonRPCConfig.JSON_RPC_SERVER_PORT;
+    } else {
+        host = JsonRPCConfig.JSON_RPC_SERVER_HOST2;
+        porta = JsonRPCConfig.JSON_RPC_SERVER_PORT2;
     }
+
+    contadorRequisicoes++;
+    System.out.println("LoadBalancer: conectando ao servidor " + host + ":" + porta);
+    this.cliente = new Socket(host, porta);
+    this.saida = new PrintWriter(cliente.getOutputStream(), true);
+    this.entrada = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
+}
 
     private void fecharConexao() throws IOException {
         if (cliente != null && cliente.isConnected()) {
