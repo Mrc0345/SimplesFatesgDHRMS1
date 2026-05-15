@@ -18,7 +18,7 @@ public class ServidorDeCalculoApi implements ClienteDeCalculoFolhaInterface {
     private Socket cliente;
     private PrintWriter saida;
     private BufferedReader entrada;
-
+//comentario apenas pra dizer que rodei mvn passou
     public ServidorDeCalculoApi() {
         super();
     }
